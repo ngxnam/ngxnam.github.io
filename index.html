@@ -1,1 +1,70 @@
-Hello World
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Nam's Audio Player</title>
+</head>
+<body>
+  <h2>Danh sách audio</h2>
+  <ul id="audioList"></ul>
+  <p id="fileName"></p>
+  <audio id="player" controls></audio>
+  <button onclick="playPrev()">Previous</button>
+  <button onclick="playNext()">Next</button>
+
+  <script>
+    const repo = "ngxnam/ngxnam.github.io"; // thay bằng repo bạn dùng
+    const folder = "audio";
+    const listEl = document.getElementById("audioList");
+    const player = document.getElementById("player");
+    const fileName = document.getElementById("fileName");
+
+    let files = [];
+    let current = 0;
+
+    async function fetchFiles() {
+      const res = await fetch(`https://api.github.com/repos/${repo}/contents/${folder}`);
+      const data = await res.json();
+      files = data
+        .filter(f => f.name.endsWith(".mp3"))
+        .sort((a, b) => a.name.localeCompare(b.name));
+      if (files.length) {
+        files.forEach((f, i) => {
+          const li = document.createElement("li");
+          li.textContent = f.name;
+          li.style.cursor = "pointer";
+          li.onclick = () => loadAndPlay(i);
+          listEl.appendChild(li);
+        });
+        loadAndPlay(0);
+      }
+    }
+
+    function loadAndPlay(index) {
+      current = index;
+      player.src = files[index].download_url;
+      fileName.textContent = files[index].name;
+      player.load();
+      player.play();
+    }
+
+    function playNext() {
+      if (current < files.length - 1) {
+        loadAndPlay(current + 1);
+      }
+    }
+
+    function playPrev() {
+      if (current > 0) {
+        loadAndPlay(current - 1);
+      }
+    }
+
+    player.addEventListener("ended", () => {
+      setTimeout(playNext, 5000); // auto chuyển sau 5s
+    });
+
+    fetchFiles();
+  </script>
+</body>
+</html>
