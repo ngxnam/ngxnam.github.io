@@ -29,13 +29,13 @@
         .filter(f => f.name.endsWith(".mp3"))
         .sort((a, b) => a.name.localeCompare(b.name));
       if (files.length) {
-        files.forEach((f, i) => {
-          const li = document.createElement("li");
-          li.textContent = f.name;
-          li.style.cursor = "pointer";
-          li.onclick = () => loadAndPlay(i);
-          listEl.appendChild(li);
-        });
+        // files.forEach((f, i) => {
+        //   const li = document.createElement("li");
+        //   li.textContent = f.name;
+        //   li.style.cursor = "pointer";
+        //   li.onclick = () => loadAndPlay(i);
+        //   listEl.appendChild(li);
+        // });
         loadAndPlay(0);
       }
     }
@@ -61,7 +61,7 @@
     }
 
     player.addEventListener("ended", () => {
-      setTimeout(playNext, 5000); // auto chuyển sau 5s
+      setTimeout(playNext, 3000); // auto chuyển sau 3s
     });
 
     fetchFiles();
